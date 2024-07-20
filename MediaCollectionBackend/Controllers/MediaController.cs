@@ -1,3 +1,5 @@
+using MediaCollectionBackend.BusinessLayer;
+using MediaCollectionBackend.BusinessLayer.BusinessModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediaCollectionBackend.Controllers
@@ -6,42 +8,41 @@ namespace MediaCollectionBackend.Controllers
     [Route("[controller]")]
     public class MediaController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        private readonly IMediaService _mediaService;
 
-        private readonly ILogger<MediaController> _logger;
-
-        public MediaController(ILogger<MediaController> logger)
+        public MediaController(IMediaService mediaService)
         {
-            _logger = logger;
+            _mediaService = mediaService;
         }
 
         [HttpGet()]
-        public IEnumerable<WeatherForecast> Get()
+        public IEnumerable<MediaBL> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            return _mediaService.GetAllMedias();
         }
 
-        //TODO come back to this later
-        [HttpGet]
-        [Route("id")]
-        public IEnumerable<WeatherForecast> GetByID()
+        [HttpGet("{id}")]
+        public MediaBL GetByID(string id)
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            return _mediaService.GetMediaByID(id);
+        }
+
+        [HttpPost]
+        public void InsertMedia(MediaBL media) 
+        {
+            _mediaService.InsertMedia(media);
+        }
+
+        [HttpPut]
+        public void UpdateMedia(MediaBL media)
+        {
+            _mediaService.UpdateMedia(media);
+        }
+
+        [HttpDelete("{id}")]
+        public void DeleteMedia(string id)
+        {
+            _mediaService.DeleteMedia(id);
         }
     }
 }

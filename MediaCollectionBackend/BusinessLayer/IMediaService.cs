@@ -4,7 +4,10 @@ namespace MediaCollectionBackend.BusinessLayer
 {
     public interface IMediaService
     {
+        void DeleteMedia(string id);
         IEnumerable<MediaBL> GetAllMedias();
-        void InsertMedia();
+        MediaBL GetMediaByID(string id);
+        void InsertMedia(MediaBL media);
+        void UpdateMedia(MediaBL media);
     }
 }
