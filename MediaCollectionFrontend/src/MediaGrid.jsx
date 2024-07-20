@@ -1,3 +1,6 @@
+import React from 'react';
+import './MediaGrid.css';
+
 function MediaGrid() {
 
     var allMedia = [
@@ -16,14 +19,22 @@ function MediaGrid() {
 
 
     return (
-        <div>
-            <ul>
+        <div className="media-grid-container">
+            <div className="media-grid">
+                <div className="media-grid-header">Name</div>
+                <div className="media-grid-header">Author</div>
+                <div className="media-grid-header">Description</div>
                 {allMedia.map(x => (
-                    <li key={x.id}>Name: {x.mediaName} - Author: {x.mediaAuthor} - Description: {x.mediaDescription}</li>
+                    <React.Fragment key={x.id}>
+                        <div className="media-grid-item">{x.mediaName}</div>
+                        <div className="media-grid-item">{x.mediaAuthor}</div>
+                        <div className="media-grid-item">{x.mediaDescription}</div>
+                    </React.Fragment>
                 ))}
-            </ul>
+            </div>
         </div>
     );
+
 }
 
 export default MediaGrid
