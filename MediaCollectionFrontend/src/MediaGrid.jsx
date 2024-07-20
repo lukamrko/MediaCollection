@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './MediaGrid.css';
 
 function MediaGrid() {
+
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        fetch('https://localhost:7148/Media')
+            .then(response => response.json())
+            .then(json => setData(json))
+            .catch(error => console.error(error));
+    }, [])
+
+    console.log(data);
 
     var allMedia = [
         {
