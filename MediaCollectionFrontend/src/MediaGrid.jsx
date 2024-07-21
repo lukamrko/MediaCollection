@@ -1,24 +1,15 @@
-import React, { useState, useEffect } from 'React';
+import React from 'React';
+import PropTypes from 'prop-types';
 import './MediaGrid.css';
 
-function MediaGrid() {
-
-    const [data, setData] = useState([]);
-
-    useEffect(() => {
-        fetch('https://localhost:7148/Media')
-            .then(response => response.json())
-            .then(json => setData(json))
-            .catch(error => console.error(error));
-    }, [])
-
+function MediaGrid({ mediaData }) {
     return (
         <div className="media-grid-container">
             <div className="media-grid">
                 <div className="media-grid-header">Name</div>
                 <div className="media-grid-header">Author</div>
                 <div className="media-grid-header">Description</div>
-                {data.map(x => (
+                {mediaData.map(x => (
                     <React.Fragment key={x.id}>
                         <div className="media-grid-item">{x.mediaName}</div>
                         <div className="media-grid-item">{x.mediaAuthor}</div>
@@ -30,5 +21,14 @@ function MediaGrid() {
     );
 
 }
+
+MediaGrid.propTypes = {
+    mediaData: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        mediaName: PropTypes.string.isRequired,
+        mediaAuthor: PropTypes.string.isRequired,
+        mediaDescription: PropTypes.string.isRequired,
+    })).isRequired,
+};
 
 export default MediaGrid

@@ -1,10 +1,28 @@
-import { useState } from 'React';
+import { useState, useEffect } from 'React';
 import MediaModal from './MediaModal';
 import MediaGrid from "./MediaGrid"
 import './App.css';
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mediaData, setMediaData] = useState([]);
+
+  useEffect(() => {
+    fetchMediaData();
+  }, []);
+
+  const fetchMediaData = async () => {
+    try {
+      const response = await fetch('https://localhost:7148/Media');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setMediaData(data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   const openMediaModal = () => {
     setIsModalOpen(true);
@@ -14,10 +32,15 @@ function App() {
     setIsModalOpen(false);
   };
 
-  const confirmMediaModal = (mediaName, mediaAuthor, mediaDescription) => {
+  const confirmMediaModal = async (mediaName, mediaAuthor, mediaDescription) => {
     setIsModalOpen(false);
     // Perform the API call
-    insertMediaAPIcall(mediaName, mediaAuthor, mediaDescription);
+    try {
+      await insertMediaAPIcall(mediaName, mediaAuthor, mediaDescription);
+      fetchMediaData(); // Refresh media data after successful POST
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const insertMediaAPIcall = async (mediaName, mediaAuthor, mediaDescription) => {
@@ -41,10 +64,10 @@ function App() {
 
   return (
     <>
-      <MediaGrid />
+      <MediaGrid mediaData={mediaData} />
       <div className='modalButtons'>
         <button className='mainModalButton' onClick={openMediaModal}>Insert media</button>
-        <MediaModal 
+        <MediaModal
           isOpen={isModalOpen}
           onClose={closeMediaModal}
           onConfirm={confirmMediaModal}
