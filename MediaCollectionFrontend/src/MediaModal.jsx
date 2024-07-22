@@ -40,11 +40,11 @@ const MediaModal = ({ isOpen, onClose, onConfirm }) => {
                 </div>
                 <div>
                     <label>Author: </label>
-                    <input type="text" value={mediaAuthor} placeholder='Name' onChange={handleAuthorChange} />
+                    <input type="text" value={mediaAuthor} placeholder='Author' onChange={handleAuthorChange} />
                 </div>
                 <div>
                     <label>Description: </label>
-                    <input type="text" value={mediaDescription} placeholder='Name' onChange={handleDescriptionChange} />
+                    <input type="text" value={mediaDescription} placeholder='Description' onChange={handleDescriptionChange} />
                 </div>
                 <div className="modal-buttons">
                     <button onClick={handleConfirm}>OK</button>
