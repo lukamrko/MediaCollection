@@ -37,5 +37,21 @@ export const insertMedia = async (mediaName, mediaAuthor, mediaDescription) => {
     }
 };
 
+export async function updateMedia(id, mediaName, mediaAuthor, mediaDescription) {
+    try {
+        const response = await fetch(baseMediaURL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id, mediaName, mediaAuthor, mediaDescription }),
+        });
+        return await checkResponse(response);
+    } catch (error) {
+        console.error('Error updating media:', error);
+        throw error;
+    }
+}
+
 // export const updateMedia = async (id, updatedData) => { ... };
 // export const deleteMedia = async (id) => { ... };

@@ -1,29 +1,25 @@
-import {useState} from 'React';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './MediaModal.css';
 
-const MediaModal = ({ isOpen, onClose, onConfirm }) => {
-    let [mediaName, setMediaName] = useState("");
-    let [mediaAuthor, setMediaAuthor] = useState("");
-    let [mediaDescription, setMediaDescription] = useState("");
+const MediaModal = ({ isOpen, onClose, onConfirm, selectedMedia }) => {
+    const [mediaName, setMediaName] = useState("");
+    const [mediaAuthor, setMediaAuthor] = useState("");
+    const [mediaDescription, setMediaDescription] = useState("");
+
+    useEffect(() => {
+        if (selectedMedia) {
+            setMediaName(selectedMedia.mediaName);
+            setMediaAuthor(selectedMedia.mediaAuthor);
+            setMediaDescription(selectedMedia.mediaDescription);
+        } else {
+            setMediaName("");
+            setMediaAuthor("");
+            setMediaDescription("");
+        }
+    }, [selectedMedia]);
 
     if (!isOpen) return null;
-
-    //TODO - add changes for possibility of update
-    let isInsert = true;
-    let modalTitle = isInsert ? "Insert media" : "Update media";
-
-    function handleNameChange(e){
-        setMediaName(e.target.value);
-    }
-
-    function handleAuthorChange(e) {
-        setMediaAuthor(e.target.value);
-    }
-
-    function handleDescriptionChange(e) {
-        setMediaDescription(e.target.value);
-    }
 
     const handleConfirm = () => {
         onConfirm(mediaName, mediaAuthor, mediaDescription);
@@ -32,19 +28,19 @@ const MediaModal = ({ isOpen, onClose, onConfirm }) => {
     return (
         <div className="modal-overlay">
             <div className="modal-content">
-                <h2>{modalTitle}</h2>
+                <h2>{selectedMedia ? "Update media" : "Insert media"}</h2>
                 <p>Please fill the following form</p>
                 <div>
                     <label>Name: </label>
-                    <input type="text" value={mediaName} placeholder='Name' onChange={handleNameChange}/>
+                    <input type="text" value={mediaName} placeholder='Name' onChange={(e) => setMediaName(e.target.value)} />
                 </div>
                 <div>
                     <label>Author: </label>
-                    <input type="text" value={mediaAuthor} placeholder='Author' onChange={handleAuthorChange} />
+                    <input type="text" value={mediaAuthor} placeholder='Author' onChange={(e) => setMediaAuthor(e.target.value)} />
                 </div>
                 <div>
                     <label>Description: </label>
-                    <input type="text" value={mediaDescription} placeholder='Description' onChange={handleDescriptionChange} />
+                    <input type="text" value={mediaDescription} placeholder='Description' onChange={(e) => setMediaDescription(e.target.value)} />
                 </div>
                 <div className="modal-buttons">
                     <button onClick={handleConfirm}>OK</button>
@@ -59,6 +55,12 @@ MediaModal.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onConfirm: PropTypes.func.isRequired,
+    selectedMedia: PropTypes.shape({
+        id: PropTypes.string,
+        mediaName: PropTypes.string,
+        mediaAuthor: PropTypes.string,
+        mediaDescription: PropTypes.string,
+    }),
 };
 
 export default MediaModal;
