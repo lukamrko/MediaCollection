@@ -1,5 +1,7 @@
 using MediaCollectionBackend.BusinessLayer;
 using MediaCollectionBackend.DatabaseLayer;
+using MediaCollectionBackend.StartupSettings;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,17 +15,9 @@ builder.Services.AddSingleton<IMongoDbService, MongoDbService>();
 builder.Services.AddTransient<IDatabaseService, DatabaseService>();
 builder.Services.AddTransient<IMediaService, MediaService>();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowReactApp",
-        policy =>
-        {
-            // React URL goes here
-            policy.WithOrigins("http://localhost:5173")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
-});
+// Load CORS settings from appsettings.json
+var corsConfiguration = builder.Configuration.GetSection("CorsSettings");
+builder.Services.Configure<CorsSettings>(corsConfiguration);
 
 var app = builder.Build();
 
@@ -38,7 +32,22 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.UseCors("AllowReactApp");
+// Use CORS settings from the configuration
+var corsSettings = app.Services.GetRequiredService<IOptions<CorsSettings>>().Value;
+app.UseCors(policy =>
+{
+    policy.WithOrigins(corsSettings.AllowedOrigins);
+
+    if (corsSettings.AllowAnyHeader)
+    {
+        policy.AllowAnyHeader();
+    }
+
+    if (corsSettings.AllowAnyMethod)
+    {
+        policy.AllowAnyMethod();
+    }
+});
 
 app.MapControllers();
 
